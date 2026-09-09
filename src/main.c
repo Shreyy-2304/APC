@@ -1,5 +1,6 @@
 #include "dll.h"
 #include "validate.h"
+#include "apc.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,11 +16,38 @@ int main(int argc, char *argv[])
     Dlist *result_head = NULL;
     Dlist *result_tail = NULL;
 
+    //sign variables
+    int sign1 = 1;
+    int sign2 = 1;
+    int result_sign = 1;
+
     if(validate_arguments(argc, argv) == FAILURE)
     {
         return FAILURE;
     }
 
+    //convert first operand to DLL
+    if(str_to_list(argv[1], &head1, &tail1, &sign1) == FAILURE)
+    {
+        printf("ERROR : Failed to parse first operand\n");
+        return FAILURE;
+    }
 
+    //convert second operand to DLL
+    if(str_to_list(argv[3], &head2, &tail2, &sign2) == FAILURE)
+    {
+        printf("ERROR : Failed to parse the second operand\n");
+        return FAILURE;
+    }
+
+    printf("First Number : ");
+    print_list(head1);
+
+    printf("Second Number : ");
+    print_list(head2);
+
+    printf("Sign 1: %d\n", sign1);
+    printf("Sign 2: %d\n", sign2);
+    
     return SUCCESS;
 }
