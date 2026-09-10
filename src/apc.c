@@ -62,6 +62,48 @@ int str_to_list(char *str, Dlist **head, Dlist **tail, int *sign)
     return SUCCESS;
 }
 
+int compare_lists(Dlist *head1, Dlist *head2)
+{
+    int count1 = 0, count2 = 0;
+
+    Dlist *temp1 = head1, *temp2 = head2;
+
+    //count nodes in list1
+    while(temp1 != NULL)
+    {
+        count1++;
+        temp1 = temp1 -> next;
+    }
+
+    //count nodes in list2
+    while(temp2 != NULL)
+    {
+        count2++;
+        temp2 = temp2 -> next;
+    }
+
+    //compare count
+    if(count1 > count2)
+        return 1;
+    else if(count1 < count2)
+        return -1;
+
+    //if same no of digits, compare digit by digit
+    temp1 = head1, temp2 = head2;
+
+    while(temp1 != NULL)
+    {
+        if(temp1 -> data > temp2 -> data)
+            return 1;
+        else if(temp1 -> data < temp2 -> data)
+            return -1;
+
+        temp1 = temp1 -> next;
+        temp2 = temp2 -> next;
+    }
+    return 0;
+}
+
 int addition(Dlist *tail1, Dlist *tail2, Dlist **result_head, Dlist **result_tail)
 {
     int carry = 0, sum;
@@ -95,6 +137,53 @@ int addition(Dlist *tail1, Dlist *tail2, Dlist **result_head, Dlist **result_tai
     {
         if(dl_insert_first(result_head, result_tail, carry) == FAILURE)
             return FAILURE;
+    }
+    return SUCCESS;
+}
+
+int subtraction(Dlist *head1, Dlist *tail1, Dlist *head2, Dlist *tail2, Dlist **result_head, Dlist **result_tail)
+{
+    int borrow = 0, diff;
+
+    while(tail1 != NULL)
+    {
+        int digit1 = tail1 -> data;
+        int digit2 = 0;
+
+        if(tail2 != NULL)
+        {
+            digit2 = tail2 -> data;
+        }
+        digit1 = digit1 - borrow;
+
+        if(digit1 < digit2)
+        {
+            digit1 = digit1 + 10;
+            borrow = 1;
+        }
+        else
+        {
+            borrow = 0;
+        }
+
+        diff = digit1 - digit2;
+
+        if(dl_insert_first(result_head, result_tail, diff) == FAILURE)
+        {
+            return FAILURE;
+        }
+
+        tail1 = tail1 -> prev;
+
+        if(tail2 != NULL)
+        {
+            tail2 = tail2 -> prev;
+        }
+    }
+
+    while(*result_head != NULL && (*result_head) -> data == 0 && *result_head != *result_tail)
+    {
+        dl_delete_first(result_head, result_tail);
     }
     return SUCCESS;
 }

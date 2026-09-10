@@ -40,6 +40,9 @@ int main(int argc, char *argv[])
         return FAILURE;
     }
 
+    int comparison = compare_lists(head1, head2);
+    printf("Comparison: %d\n", comparison);
+
     printf("First Number : ");
     print_list(head1);
 
@@ -61,8 +64,40 @@ int main(int argc, char *argv[])
             break;
 
         case '-':
-            /* subtraction will be implemented here */
+        {
+            if (comparison > 0)
+            {
+                result_sign = sign1;
+
+                if (subtraction(head1, tail1, head2, tail2, &result_head, &result_tail) == FAILURE)
+                {
+                    printf("ERROR: Subtraction failed\n");
+                    return FAILURE;
+                }
+            }
+            else if (comparison < 0)
+            {
+                result_sign = -sign1;
+
+                if (subtraction(head2, tail2, head1, tail1, &result_head, &result_tail) == FAILURE)
+                {
+                    printf("ERROR: Subtraction failed\n");
+                    return FAILURE;
+                }
+            }
+            else
+            {
+                /* Equal magnitudes → result is zero */
+                result_sign = 1;
+
+                if (dl_insert_first(&result_head, &result_tail, 0) == FAILURE)
+                {
+                    printf("ERROR: Subtraction failed\n");
+                    return FAILURE;
+                }
+            }
             break;
+        }
 
         case '*':
             /* multiplication will be implemented here */

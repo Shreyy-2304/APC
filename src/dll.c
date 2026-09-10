@@ -51,6 +51,28 @@ int dl_insert_last(Dlist **head, Dlist **tail, int data)
 
 }
 
+int dl_delete_first(Dlist **head, Dlist **tail)
+{
+    if(*head == NULL)
+        return FAILURE;
+
+    Dlist *temp = *head;
+   
+    if(*head == *tail)
+    {
+        *head = NULL;
+        *tail = NULL;
+    }
+    else
+    {
+        *head = (*head) -> next;
+        (*head) -> prev = NULL;
+    }
+    free(temp);
+
+    return SUCCESS;
+}
+
 void print_list(Dlist *head)
 {
     if(head == NULL)
