@@ -48,6 +48,37 @@ int main(int argc, char *argv[])
 
     printf("Sign 1: %d\n", sign1);
     printf("Sign 2: %d\n", sign2);
-    
+
+    /* Select operation */
+    switch (argv[2][0])
+    {
+        case '+':
+            if (addition(tail1, tail2, &result_head, &result_tail) == FAILURE)
+            {
+                printf("ERROR: Addition failed\n");
+                return FAILURE;
+            }
+            break;
+
+        case '-':
+            /* subtraction will be implemented here */
+            break;
+
+        case '*':
+            /* multiplication will be implemented here */
+            break;
+
+        case '/':
+            /* division will be implemented here */
+            break;
+
+        default:
+            printf("ERROR: Invalid operator\n");
+            return FAILURE;
+    }
+
+    printf("Result: ");
+    print_list(result_head);
+
     return SUCCESS;
 }

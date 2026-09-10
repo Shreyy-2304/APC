@@ -29,10 +29,23 @@ int str_to_list(char *str, Dlist **head, Dlist **tail, int *sign)
         temp++;
     }
 
-    /* Zero should always have positive sign */
+   /* -0, -00, etc. should become +0 */
     if (all_zero)
     {
         *sign = 1;
+
+        if (dl_insert_last(head, tail, 0) == FAILURE)
+        {
+            return FAILURE;
+        }
+
+        return SUCCESS;
+    }
+
+    /* Skip leading zeros */
+    while (*str == '0')
+    {
+        str++;
     }
 
     /* Convert each digit into DLL node */
@@ -46,5 +59,42 @@ int str_to_list(char *str, Dlist **head, Dlist **tail, int *sign)
         str++;
     }
 
+    return SUCCESS;
+}
+
+int addition(Dlist *tail1, Dlist *tail2, Dlist **result_head, Dlist **result_tail)
+{
+    int carry = 0, sum;
+
+    while(tail1 != NULL || tail2 != NULL)
+    {
+        int digit1 = 0, digit2 = 0;
+
+        if(tail1 != NULL)
+            digit1 = tail1 -> data;
+        
+        if(tail2 != NULL)
+            digit2 = tail2 -> data;
+
+        sum = digit1 + digit2 + carry;
+
+        if (dl_insert_first(result_head, result_tail, sum % 10) == FAILURE)
+        {
+            return FAILURE;
+        }
+
+        carry = sum / 10;
+
+        if(tail1 != NULL)
+            tail1 = tail1 -> prev;
+
+        if(tail2 != NULL)
+            tail2 = tail2 -> prev;  
+    }
+    if(carry != 0)
+    {
+        if(dl_insert_first(result_head, result_tail, carry) == FAILURE)
+            return FAILURE;
+    }
     return SUCCESS;
 }

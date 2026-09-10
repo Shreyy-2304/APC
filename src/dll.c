@@ -2,7 +2,27 @@
 
 int dl_insert_first(Dlist **head, Dlist **tail, int data)
 {
+    Dlist *newNode = (Dlist *)malloc(sizeof(Dlist));
 
+    if(newNode == NULL)
+        return FAILURE;
+
+    newNode -> data = data;
+    newNode -> prev = NULL;
+    newNode -> next = NULL;
+
+    if(*head == NULL)
+    {
+        *head = newNode;
+        *tail = newNode;
+        return SUCCESS;
+    }
+
+    newNode -> next = *head;
+    (*head) -> prev = newNode;
+    *head = newNode;
+
+    return SUCCESS;
 }
 
 int dl_insert_last(Dlist **head, Dlist **tail, int data)
