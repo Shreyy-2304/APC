@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
         return FAILURE;
     }
 
-    int comparison = compare_lists(head1, head2);
-    printf("Comparison: %d\n", comparison);
+    // int comparison = compare_lists(head1, head2);
+    // printf("Comparison: %d\n", comparison);
 
     printf("First Number : ");
     print_list(head1);
@@ -52,17 +52,57 @@ int main(int argc, char *argv[])
     printf("Sign 1: %d\n", sign1);
     printf("Sign 2: %d\n", sign2);
 
+    int comparison;
     /* Select operation */
     switch (argv[2][0])
     {
         case '+':
-            if (addition(tail1, tail2, &result_head, &result_tail) == FAILURE)
             {
-                printf("ERROR: Addition failed\n");
-                return FAILURE;
-            }
-            break;
+                if(sign1 == sign2)
+                {
+                    if (addition(tail1, tail2, &result_head, &result_tail) == FAILURE)
+                    {
+                        printf("ERROR: Addition failed\n");
+                        return FAILURE;
+                    } 
+                    result_sign = sign1;      
+                }
+                else
+                {
+                    comparison = compare_lists(head1, head2);
 
+                    if(comparison > 0)
+                    {
+                        if (subtraction(head1, tail1, head2, tail2, &result_head, &result_tail) == FAILURE)
+                        {
+                            printf("ERROR: Subtraction failed\n");
+                            return FAILURE;
+                        }
+                        result_sign = sign1; 
+                    }
+                    else if (comparison < 0)
+                    {
+                        if (subtraction(head2, tail2, head1, tail1, &result_head, &result_tail) == FAILURE)
+                        {
+                            printf("ERROR: Subtraction failed\n");
+                            return FAILURE;
+                        }
+                        result_sign = sign2;
+                    }
+                    else
+                    {
+                        if (dl_insert_first(&result_head, &result_tail, 0) == FAILURE)
+                        {
+                            printf("ERROR: Failed to create result\n");
+                            return FAILURE;
+                        }
+                        result_sign = 1;
+                    }
+                    
+                }
+                break;
+            }
+            
         case '-':
         {
             if (comparison > 0)
@@ -113,6 +153,9 @@ int main(int argc, char *argv[])
     }
 
     printf("Result: ");
+    if (result_sign == -1)
+        printf("-");
+        
     print_list(result_head);
 
     return SUCCESS;
