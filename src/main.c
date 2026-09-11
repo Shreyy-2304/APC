@@ -105,36 +105,89 @@ int main(int argc, char *argv[])
             
         case '-':
         {
-            if (comparison > 0)
+            if(sign1 == 1 && sign2 == 1)
             {
-                result_sign = sign1;
+                /* +A - +B */
+                comparison = compare_lists(head1, head2);
 
-                if (subtraction(head1, tail1, head2, tail2, &result_head, &result_tail) == FAILURE)
+                if(comparison > 0)
                 {
-                    printf("ERROR: Subtraction failed\n");
-                    return FAILURE;
+                    if (subtraction(head1, tail1, head2, tail2, &result_head, &result_tail) == FAILURE)
+                    {
+                        printf("ERROR: Subtraction failed\n");
+                        return FAILURE;
+                    }
+                    result_sign = 1;
+                }
+                else if (comparison < 0)
+                {
+                    if (subtraction(head2, tail2, head1, tail1, &result_head, &result_tail) == FAILURE)
+                    {
+                        printf("ERROR: Subtraction failed\n");
+                        return FAILURE;
+                    }
+                    result_sign = -1;
+                }
+                else
+                {
+                    dl_insert_first(&result_head, &result_tail, 0);
+                    result_sign = 1;
                 }
             }
-            else if (comparison < 0)
+            else if(sign1 == 1 && sign2 == -1)
             {
-                result_sign = -sign1;
-
-                if (subtraction(head2, tail2, head1, tail1, &result_head, &result_tail) == FAILURE)
+                //+A - (-B) = A + B, sign +
+                if (addition(tail1, tail2, &result_head, &result_tail) == FAILURE)
                 {
-                    printf("ERROR: Subtraction failed\n");
+                    printf("ERROR: Addition failed\n");
                     return FAILURE;
                 }
+                result_sign = 1;
+            }
+            else if(sign1 == -1 && sign2 == 1)
+            {
+                /* -A - (+B) = -(A + B) */
+                if (addition(tail1, tail2, &result_head, &result_tail) == FAILURE)
+                {
+                    printf("ERROR: Addition failed\n");
+                    return FAILURE;
+                }
+                result_sign = -1;
             }
             else
             {
-                /* Equal magnitudes → result is zero */
-                result_sign = 1;
+                //-A - (-B) = B - A
+                comparison = compare_lists(head1, head2);
 
-                if (dl_insert_first(&result_head, &result_tail, 0) == FAILURE)
+                if(comparison > 0)
                 {
-                    printf("ERROR: Subtraction failed\n");
-                    return FAILURE;
+                    /* A > B → B - A → negative */
+
+                    if (subtraction(head1, tail1, head2, tail2, &result_head, &result_tail) == FAILURE)
+                    {
+                        printf("ERROR: Subtraction failed\n");
+                        return FAILURE;
+                    }
+                    result_sign = -1;
                 }
+                else if (comparison < 0)
+                {
+                    /* B > A → B - A → positive */
+
+                    if (subtraction(head2, tail2, head1, tail1, &result_head, &result_tail) == FAILURE)
+                    {
+                        printf("ERROR: Subtraction failed\n");
+                        return FAILURE;
+                    }
+                    result_sign = 1;
+                }
+                else
+                {
+                    /* Equal magnitudes */
+                    dl_insert_first(&result_head, &result_tail, 0);
+                    result_sign = 1;
+                }
+                
             }
             break;
         }
@@ -155,7 +208,7 @@ int main(int argc, char *argv[])
     printf("Result: ");
     if (result_sign == -1)
         printf("-");
-        
+
     print_list(result_head);
 
     return SUCCESS;
