@@ -73,6 +73,27 @@ int dl_delete_first(Dlist **head, Dlist **tail)
     return SUCCESS;
 }
 
+int dl_delete_list(Dlist **head, Dlist **tail)
+{
+    Dlist *temp;
+
+    if (*head == NULL)
+    {
+        return LIST_NOT_FOUND;
+    }
+
+    while (*head != NULL)
+    {
+        temp = *head;
+        *head = (*head)->next;
+        free(temp);
+    }
+
+    *tail = NULL;
+
+    return SUCCESS;
+}
+
 void print_list(Dlist *head)
 {
     if(head == NULL)

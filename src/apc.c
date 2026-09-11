@@ -187,3 +187,66 @@ int subtraction(Dlist *head1, Dlist *tail1, Dlist *head2, Dlist *tail2, Dlist **
     }
     return SUCCESS;
 }
+
+int multiplication(Dlist *head1, Dlist *tail1, Dlist *head2, Dlist *tail2, Dlist **result_head, Dlist **result_tail)
+{
+    Dlist *temp_head = NULL, *temp_tail = NULL;
+    Dlist *new_result_head = NULL, *new_result_tail = NULL;
+    Dlist *temp1, *temp2;
+    int carry, prod, shift = 0;
+
+    temp2 = tail2;
+
+    while(temp2 != NULL)
+    {
+        dl_delete_list(&temp_head, &temp_tail);
+    
+        carry = 0;
+        temp1 = tail1;
+
+        while(temp1 != NULL)
+        {
+            prod = temp1 -> data * temp2 -> data + carry;
+
+            if(dl_insert_first(&temp_head, &temp_tail, prod % 10) == FAILURE)
+            {
+                return FAILURE;
+            }
+            carry = prod / 10;
+            temp1 = temp1 -> prev;
+        }
+
+        if(carry != 0)
+        {
+            if(dl_insert_first(&temp_head, &temp_tail, carry) == FAILURE)
+            {
+                return FAILURE;
+            }
+        }
+
+        for(int i = 0; i < shift; i++)
+        {
+            if(dl_insert_last(&temp_head, &temp_tail, 0) == FAILURE)
+            {
+                return FAILURE;
+            }
+        }
+        if(addition(temp_tail, *result_tail,
+            &new_result_head, &new_result_tail) == FAILURE)
+        {
+            return FAILURE;
+        }
+        
+        dl_delete_list(result_head, result_tail);
+
+        *result_head = new_result_head;
+        *result_tail = new_result_tail;
+
+        new_result_head = NULL;
+        new_result_tail = NULL;
+
+        shift++;
+        temp2 = temp2 -> prev;
+    }
+    return SUCCESS;
+}

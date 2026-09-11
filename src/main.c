@@ -193,7 +193,13 @@ int main(int argc, char *argv[])
         }
 
         case '*':
-            /* multiplication will be implemented here */
+           if (multiplication(head1, tail1, head2, tail2, &result_head, &result_tail) == FAILURE)
+            {
+                printf("ERROR: Multiplication failed\n");
+                return FAILURE;
+            }
+
+            result_sign = sign1 * sign2;
             break;
 
         case '/':
